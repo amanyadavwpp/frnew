@@ -1,0 +1,2551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+
+  <title>CA Final FR Study Tracker</title>
+
+  <style>
+    :root {
+      --primary: #0f766e;
+      --primary-dark: #115e59;
+      --primary-light: #ccfbf1;
+      --accent: #f59e0b;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --text: #172033;
+      --muted: #64748b;
+      --border: #dbe3ee;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
+    }
+
+    body.dark {
+      --bg: #0b1120;
+      --surface: #111827;
+      --surface-2: #172033;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: #263348;
+      --primary-light: rgba(20, 184, 166, 0.13);
+      --shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 5% 5%, rgba(20, 184, 166, 0.12), transparent 25%),
+        radial-gradient(circle at 95% 15%, rgba(59, 130, 246, 0.10), transparent 25%),
+        var(--bg);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button,
+    .file-button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    .file-button:focus-visible {
+      outline: 3px solid rgba(20, 184, 166, 0.28);
+      outline-offset: 2px;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 24px 18px;
+      color: white;
+      background:
+        linear-gradient(165deg, #0f766e 0%, #115e59 48%, #0f3d3a 100%);
+      box-shadow: 8px 0 30px rgba(15, 23, 42, 0.12);
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .brand-icon {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 15px;
+      font-size: 24px;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .brand small {
+      display: block;
+      margin-top: 3px;
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .nav-button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 14px;
+      color: rgba(255, 255, 255, 0.82);
+      background: transparent;
+      border-radius: 13px;
+      text-align: left;
+      transition: 0.2s ease;
+    }
+
+    .nav-button:hover,
+    .nav-button.active {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateX(2px);
+    }
+
+    .sidebar-footer {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 22px;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .main {
+      min-width: 0;
+      padding: 26px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .topbar h2 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 34px);
+    }
+
+    .subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .icon-button,
+    .button,
+    .file-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 3px 12px rgba(15, 23, 42, 0.05);
+      transition: 0.2s ease;
+    }
+
+    .icon-button {
+      width: 44px;
+      padding: 0;
+      font-size: 18px;
+    }
+
+    .button:hover,
+    .icon-button:hover,
+    .file-button:hover {
+      transform: translateY(-1px);
+      border-color: var(--primary);
+    }
+
+    .button.primary {
+      color: white;
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .button.primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .button.danger {
+      color: white;
+      background: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .button.small {
+      min-height: 36px;
+      padding: 7px 11px;
+      font-size: 13px;
+    }
+
+    .page {
+      display: none;
+      animation: fade 0.22s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fade {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .stat-card {
+      position: relative;
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    .stat-card::after {
+      content: "";
+      position: absolute;
+      right: -20px;
+      bottom: -25px;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: rgba(20, 184, 166, 0.08);
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-value {
+      margin-top: 8px;
+      font-size: 27px;
+      font-weight: 800;
+    }
+
+    .stat-caption {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .overview-card {
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 15px;
+    }
+
+    .section-heading h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .section-heading p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .progress-track {
+      overflow: hidden;
+      height: 12px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #14b8a6, #0f766e);
+      transition: width 0.35s ease;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) 190px 190px;
+      gap: 12px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+
+    .input,
+    .select {
+      width: 100%;
+      height: 44px;
+      padding: 0 13px;
+      color: var(--text);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .chapter-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .chapter-card {
+      overflow: hidden;
+    }
+
+    .chapter-header {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto auto;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 18px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .chapter-header:hover {
+      background: var(--surface-2);
+    }
+
+    .chapter-toggle {
+      color: var(--muted);
+      transition: transform 0.2s ease;
+    }
+
+    .chapter-card.open .chapter-toggle {
+      transform: rotate(90deg);
+    }
+
+    .chapter-title {
+      min-width: 0;
+    }
+
+    .chapter-title strong {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chapter-title small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+    }
+
+    .chapter-percent {
+      min-width: 52px;
+      text-align: right;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .mini-progress {
+      width: 110px;
+      height: 7px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--surface-2);
+    }
+
+    .mini-progress > span {
+      display: block;
+      height: 100%;
+      background: var(--primary);
+      border-radius: inherit;
+    }
+
+    .chapter-body {
+      display: none;
+      overflow-x: auto;
+      border-top: 1px solid var(--border);
+    }
+
+    .chapter-card.open .chapter-body {
+      display: block;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      color: var(--muted);
+      background: var(--surface-2);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    tbody tr.completed-row {
+      color: var(--muted);
+      background: rgba(22, 163, 74, 0.06);
+    }
+
+    tbody tr.completed-row .lecture-name {
+      text-decoration: line-through;
+    }
+
+    .checkbox {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--success);
+      cursor: pointer;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    .status-badge.done {
+      color: #15803d;
+      background: rgba(22, 163, 74, 0.12);
+    }
+
+    .status-badge.pending {
+      color: #b45309;
+      background: rgba(245, 158, 11, 0.14);
+    }
+
+    .test-section {
+      margin-top: 22px;
+      padding: 22px;
+    }
+
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .test-item {
+      padding: 15px;
+      border-radius: 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+    }
+
+    .test-item.ready {
+      background: rgba(22, 163, 74, 0.08);
+      border-color: rgba(22, 163, 74, 0.25);
+    }
+
+    .test-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-weight: 800;
+    }
+
+    .test-topics {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* Pomodoro */
+    .focus-layout {
+      display: grid;
+      grid-template-columns: minmax(350px, 1.2fr) minmax(280px, 0.8fr);
+      gap: 20px;
+    }
+
+    .timer-card {
+      padding: 28px;
+      text-align: center;
+    }
+
+    .mode-switcher {
+      display: inline-flex;
+      gap: 7px;
+      padding: 6px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    .mode-button {
+      padding: 9px 13px;
+      color: var(--muted);
+      background: transparent;
+      border-radius: 10px;
+      font-weight: 700;
+    }
+
+    .mode-button.active {
+      color: white;
+      background: var(--primary);
+    }
+
+    .timer-ring {
+      --timer-progress: 0deg;
+      display: grid;
+      place-items: center;
+      width: min(330px, 78vw);
+      aspect-ratio: 1;
+      margin: 28px auto;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, var(--surface) 65%, transparent 66%),
+        conic-gradient(var(--primary) var(--timer-progress), var(--surface-2) 0);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+
+    .timer-time {
+      font-size: clamp(52px, 8vw, 78px);
+      font-weight: 850;
+      letter-spacing: -0.05em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timer-label {
+      margin-top: 7px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .timer-actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .timer-actions .button {
+      min-width: 105px;
+    }
+
+    .focus-side {
+      display: grid;
+      align-content: start;
+      gap: 18px;
+    }
+
+    .side-card {
+      padding: 20px;
+    }
+
+    .side-card h3 {
+      margin: 0 0 14px;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field:last-child {
+      margin-bottom: 0;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+    }
+
+    .settings-grid input {
+      width: 100%;
+      min-width: 0;
+      height: 42px;
+      padding: 0 8px;
+      color: var(--text);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .focus-summary {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .focus-summary div {
+      padding: 14px;
+      text-align: center;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+    }
+
+    .focus-summary strong {
+      display: block;
+      font-size: 23px;
+    }
+
+    .focus-summary span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* History */
+    .history-toolbar,
+    .backup-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .history-list {
+      overflow: hidden;
+    }
+
+    .history-item {
+      display: grid;
+      grid-template-columns: 46px minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .history-item:last-child {
+      border-bottom: 0;
+    }
+
+    .history-icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: var(--primary-light);
+      font-size: 19px;
+    }
+
+    .history-title {
+      font-weight: 750;
+    }
+
+    .history-meta {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .history-date {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .empty-state {
+      padding: 50px 20px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .backup-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+
+    .file-button input {
+      display: none;
+    }
+
+    .mobile-menu {
+      display: none;
+    }
+
+    .toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 100;
+      max-width: 330px;
+      padding: 13px 17px;
+      color: white;
+      background: #172033;
+      border-radius: 12px;
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.28);
+      transform: translateY(30px);
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.25s ease;
+    }
+
+    .toast.show {
+      transform: none;
+      opacity: 1;
+    }
+
+    @media (max-width: 1050px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .focus-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 780px) {
+      .app {
+        display: block;
+      }
+
+      .sidebar {
+        position: fixed;
+        left: 0;
+        width: 250px;
+        transform: translateX(-105%);
+        transition: transform 0.25s ease;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main {
+        padding: 18px;
+      }
+
+      .mobile-menu {
+        display: inline-flex;
+      }
+
+      .filters {
+        grid-template-columns: 1fr;
+      }
+
+      .test-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .chapter-header {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+      }
+
+      .mini-progress {
+        display: none;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .stat-card {
+        padding: 15px;
+      }
+
+      .stat-value {
+        font-size: 21px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+      }
+
+      .top-actions .button {
+        display: none;
+      }
+
+      .history-toolbar,
+      .backup-card {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .history-item {
+        grid-template-columns: 42px minmax(0, 1fr);
+      }
+
+      .history-date {
+        grid-column: 2;
+        text-align: left;
+      }
+
+      .settings-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .timer-card {
+        padding: 20px 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-icon">📚</div>
+        <div>
+          <h1>CA Final FR</h1>
+          <small>Regular Batch Tracker</small>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-button active" data-page="tracker">
+          <span>📋</span> Lecture Tracker
+        </button>
+
+        <button class="nav-button" data-page="focus">
+          <span>🍅</span> Pomodoro Focus
+        </button>
+
+        <button class="nav-button" data-page="history">
+          <span>🕘</span> Study History
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        Your progress, timer and history are automatically saved in this browser.
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <button class="icon-button mobile-menu" id="mobileMenuButton" aria-label="Open menu">
+            ☰
+          </button>
+
+          <h2 id="pageTitle">Lecture Tracker</h2>
+          <p class="subtitle" id="pageSubtitle">
+            Track every lecture and complete your FR syllabus.
+          </p>
+        </div>
+
+        <div class="top-actions">
+          <button class="icon-button" id="themeButton" title="Toggle theme" aria-label="Toggle theme">
+            🌙
+          </button>
+
+          <button class="button primary" id="openFocusButton">
+            🍅 Start Focus
+          </button>
+        </div>
+      </header>
+
+      <!-- TRACKER PAGE -->
+      <section class="page active" id="trackerPage">
+        <div class="stats-grid">
+          <article class="card stat-card">
+            <div class="stat-label">Overall progress</div>
+            <div class="stat-value" id="progressStat">0%</div>
+            <div class="stat-caption" id="completedCaption">0 lectures completed</div>
+          </article>
+
+          <article class="card stat-card">
+            <div class="stat-label">Completed time</div>
+            <div class="stat-value" id="completedTimeStat">0h 0m</div>
+            <div class="stat-caption">Based on lecture duration</div>
+          </article>
+
+          <article class="card stat-card">
+            <div class="stat-label">Remaining time</div>
+            <div class="stat-value" id="remainingTimeStat">0h 0m</div>
+            <div class="stat-caption">Estimated video time</div>
+          </article>
+
+          <article class="card stat-card">
+            <div class="stat-label">Focus today</div>
+            <div class="stat-value" id="todayFocusStat">0m</div>
+            <div class="stat-caption" id="todaySessionsCaption">0 Pomodoro sessions</div>
+          </article>
+        </div>
+
+        <article class="card overview-card">
+          <div class="section-heading">
+            <div>
+              <h3>Course progress</h3>
+              <p id="overallProgressText">Start checking off completed lectures.</p>
+            </div>
+            <strong id="overallPercent">0%</strong>
+          </div>
+
+          <div class="progress-track">
+            <div class="progress-fill" id="overallProgressBar"></div>
+          </div>
+
+          <div class="progress-meta">
+            <span id="progressCount">0 / 0 lectures</span>
+            <span id="totalCourseTime">Total: 0h</span>
+          </div>
+        </article>
+
+        <div class="card filters">
+          <input
+            class="input"
+            id="searchInput"
+            type="search"
+            placeholder="Search chapter, lecture or topic..."
+          >
+
+          <select class="select" id="statusFilter">
+            <option value="all">All lectures</option>
+            <option value="pending">Pending only</option>
+            <option value="completed">Completed only</option>
+          </select>
+
+          <select class="select" id="chapterFilter">
+            <option value="all">All chapters</option>
+          </select>
+        </div>
+
+        <div class="chapter-list" id="chapterList"></div>
+
+        <article class="card test-section">
+          <div class="section-heading">
+            <div>
+              <h3>Test milestones</h3>
+              <p>A test becomes ready when all its listed chapters are completed.</p>
+            </div>
+          </div>
+
+          <div class="test-grid" id="testGrid"></div>
+        </article>
+      </section>
+
+      <!-- FOCUS PAGE -->
+      <section class="page" id="focusPage">
+        <div class="focus-layout">
+          <article class="card timer-card">
+            <div class="mode-switcher">
+              <button class="mode-button active" data-mode="focus">Focus</button>
+              <button class="mode-button" data-mode="short">Short Break</button>
+              <button class="mode-button" data-mode="long">Long Break</button>
+            </div>
+
+            <div class="timer-ring" id="timerRing">
+              <div>
+                <div class="timer-time" id="timerDisplay">25:00</div>
+                <div class="timer-label" id="timerLabel">Ready to focus</div>
+              </div>
+            </div>
+
+            <div class="timer-actions">
+              <button class="button primary" id="timerStartButton">▶ Start</button>
+              <button class="button" id="timerResetButton">↺ Reset</button>
+              <button class="button" id="timerSkipButton">⏭ Skip</button>
+            </div>
+          </article>
+
+          <div class="focus-side">
+            <article class="card side-card">
+              <h3>Focus task</h3>
+
+              <div class="field">
+                <label for="focusLecture">Lecture being studied</label>
+                <select class="select" id="focusLecture"></select>
+              </div>
+
+              <div class="field">
+                <label for="focusNote">Session note</label>
+                <input
+                  class="input"
+                  id="focusNote"
+                  placeholder="Example: Finish practical questions"
+                >
+              </div>
+            </article>
+
+            <article class="card side-card">
+              <h3>Timer settings</h3>
+
+              <div class="settings-grid">
+                <div class="field">
+                  <label for="focusMinutes">Focus</label>
+                  <input id="focusMinutes" type="number" min="1" max="180" value="25">
+                </div>
+
+                <div class="field">
+                  <label for="shortMinutes">Short break</label>
+                  <input id="shortMinutes" type="number" min="1" max="60" value="5">
+                </div>
+
+                <div class="field">
+                  <label for="longMinutes">Long break</label>
+                  <input id="longMinutes" type="number" min="1" max="90" value="15">
+                </div>
+              </div>
+            </article>
+
+            <article class="card side-card">
+              <h3>Focus summary</h3>
+
+              <div class="focus-summary">
+                <div>
+                  <strong id="todayPomodoros">0</strong>
+                  <span>Sessions today</span>
+                </div>
+
+                <div>
+                  <strong id="totalFocusTime">0m</strong>
+                  <span>Total focus time</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- HISTORY PAGE -->
+      <section class="page" id="historyPage">
+        <article class="card backup-card">
+          <div>
+            <strong>Backup and restore</strong>
+            <div class="history-meta">
+              Export your progress before changing browsers or clearing browser data.
+            </div>
+          </div>
+
+          <div class="backup-actions">
+            <button class="button small" id="exportButton">⬇ Export JSON</button>
+
+            <label class="file-button button small">
+              ⬆ Import JSON
+              <input id="importInput" type="file" accept=".json,application/json">
+            </label>
+
+            <button class="button danger small" id="resetDataButton">
+              Reset all data
+            </button>
+          </div>
+        </article>
+
+        <article class="card history-toolbar">
+          <div>
+            <strong>Activity timeline</strong>
+            <div class="history-meta" id="historyCount">0 saved activities</div>
+          </div>
+
+          <select class="select" id="historyFilter" style="max-width: 190px">
+            <option value="all">All activity</option>
+            <option value="pomodoro">Pomodoro sessions</option>
+            <option value="completed">Completed lectures</option>
+            <option value="reopened">Reopened lectures</option>
+          </select>
+        </article>
+
+        <article class="card history-list" id="historyList"></article>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /*
+      Data format:
+      Chapter | Lecture number | Part | Duration
+
+      The data below is based on the supplied CA Final FR tracker.
+    */
+    const RAW_LECTURES = `
+Intro to Ind AS & Sch. III|1|1|01:38:00
+Intro to Ind AS & Sch. III|1|2|01:11:00
+Intro to Ind AS & Sch. III|2|1|01:33:00
+Intro to Ind AS & Sch. III|2|2|01:12:00
+Ind AS 16|3|1|01:31:00
+Ind AS 16|3|2|00:57:00
+Ind AS 16|4|1|01:35:00
+Ind AS 16|4|2|01:07:00
+Ind AS 16|5|1|01:40:00
+Ind AS 16|5|2|00:56:00
+Ind AS 16|6|1|01:36:00
+Ind AS 16|6|2|00:59:00
+Ind AS 16|7|1|01:35:00
+Ind AS 38|7|2|00:55:00
+Ind AS 38|8|1|01:24:00
+Ind AS 38|8|2|01:14:00
+Ind AS 38|9|1|01:21:00
+Ind AS 38|9|2|00:55:00
+Ind AS 40|10|1|01:29:00
+Ind AS 40|10|2|01:22:00
+Ind AS 36|11|1|01:21:00
+Ind AS 36|11|2|01:27:00
+Ind AS 36|12|1|01:45:00
+Ind AS 36|12|2|00:55:00
+Ind AS 36|13|1|01:32:00
+Ind AS 36|13|2|01:08:00
+Ind AS 36|14|1|01:47:00
+Ind AS 105|14|2|00:43:00
+Ind AS 105|15|1|01:30:00
+Ind AS 105|15|2|00:52:00
+Ind AS 105|16|1|01:50:00
+Ind AS 41|16|2|00:35:00
+Ind AS 41|17|1|01:28:00
+Ind AS 41|17|2|01:17:00
+Ind AS 41|18|1|01:11:00
+Ind AS 2|18|2|01:26:00
+Ind AS 2|19|1|02:42:00
+Ind AS 1|19|2|01:14:00
+Ind AS 1|20|1|01:25:00
+Ind AS 1|20|2|01:13:00
+Ind AS 10|21|1|01:23:00
+Ind AS 10|21|2|01:05:00
+Ind AS 10|22|1|01:10:00
+Ind AS 10|22|2|00:17:00
+Ind AS 37|22|3|01:24:00
+Ind AS 37|23|1|01:04:00
+Ind AS 37|23|2|01:33:00
+Ind AS 37|23|3|00:10:00
+Ind AS 8|24|1|01:08:00
+Ind AS 8|24|2|01:04:00
+Ind AS 8|25|1|01:16:00
+Ind AS 8|25|2|01:05:00
+Ind AS 8|25|3|00:08:00
+Ind AS 108|26|1|01:41:00
+Ind AS 108|26|2|01:22:00
+Financial Instruments|27|1|01:25:00
+Financial Instruments|27|2|01:21:00
+Financial Instruments|28|1|01:40:00
+Financial Instruments|28|2|00:53:00
+Financial Instruments|29|1|01:43:00
+Financial Instruments|29|2|00:53:00
+Financial Instruments|30|1|01:37:00
+Financial Instruments|30|2|00:53:00
+Financial Instruments|31|1|01:13:00
+Financial Instruments|31|2|01:13:00
+Financial Instruments|32|1|01:08:00
+Financial Instruments|32|2|01:31:00
+Financial Instruments|33|1|01:28:00
+Financial Instruments|33|2|01:09:00
+Financial Instruments|34|1|01:19:00
+Financial Instruments|34|2|01:10:00
+Financial Instruments|35|1|01:22:00
+Financial Instruments|35|2|01:01:00
+Financial Instruments|36|1|01:45:00
+Financial Instruments|36|2|01:03:00
+Financial Instruments|37|1|01:36:00
+Financial Instruments|37|2|01:17:00
+Financial Instruments|38|1|01:20:00
+Financial Instruments|38|2|01:06:00
+Financial Instruments|39|1|01:23:00
+Financial Instruments|39|2|00:58:00
+Financial Instruments|40|1|01:34:00
+Financial Instruments|40|2|01:07:00
+Financial Instruments|41|1|01:23:00
+Financial Instruments|41|2|01:12:00
+Financial Instruments|41|3|01:56:00
+Ind AS 20|42|1|01:22:00
+Ind AS 20|42|2|01:14:00
+Ind AS 20|43|1|01:35:00
+Ind AS 34|43|2|00:35:00
+Ind AS 34|43|3|02:34:00
+Ind AS 23|44|1|01:20:00
+Ind AS 23|44|2|01:02:00
+Ind AS 23|45|1|01:13:00
+Ind AS 23|45|2|01:12:00
+Ind AS 23|46|1|01:19:00
+Ind AS 23|46|2|00:54:00
+Ind AS 116|47|1|01:37:00
+Ind AS 116|47|2|00:51:00
+Ind AS 116|48|1|01:15:00
+Ind AS 116|48|2|01:15:00
+Ind AS 116|49|1|01:14:00
+Ind AS 116|49|2|01:36:00
+Ind AS 116|49|3|00:31:00
+Ind AS 116|50|1|01:27:00
+Ind AS 116|50|2|00:40:00
+Ind AS 116|51|1|01:14:00
+Ind AS 116|51|2|01:19:00
+Ind AS 116|52|1|01:44:00
+Ind AS 116|52|2|00:52:00
+Ind AS 116|53|1|01:27:00
+Ind AS 116|53|2|00:51:00
+Ind AS 116|53|3|00:27:00
+Ind AS 116 vs AS 19|53|4|00:12:00
+Ind AS 19|54|1|01:19:00
+Ind AS 19|54|2|01:15:00
+Ind AS 19|55|1|01:17:00
+Ind AS 19|55|2|01:15:00
+Ind AS 19|56|1|01:24:00
+Ind AS 19|56|2|00:44:00
+Ind AS 19|57|1|01:25:00
+Ind AS 19|57|2|01:16:00
+Ind AS 12|58|1|01:36:00
+Ind AS 12|58|2|01:14:00
+Ind AS 12|59|1|01:16:00
+Ind AS 12|59|2|01:22:00
+Ind AS 12|60|1|01:23:00
+Ind AS 12|60|2|01:19:00
+Ind AS 12|61|1|01:31:00
+Ind AS 12|61|2|01:02:00
+Ind AS 12|62|1|01:30:00
+Ind AS 12|62|2|01:24:00
+Ind AS 12|62|3|00:14:00
+Ind AS 102|63|1|01:40:00
+Ind AS 102|63|2|01:00:00
+Ind AS 102|64|1|01:18:00
+Ind AS 102|64|2|01:07:00
+Ind AS 102|64|3|00:06:00
+Ind AS 102|65|1|01:23:00
+Ind AS 102|65|2|00:44:00
+Ind AS 102|66|1|01:50:00
+Ind AS 102|66|2|00:51:00
+Ind AS 102|67|1|01:50:00
+Ind AS 102|67|2|01:04:00
+Ind AS 113|68|1|01:08:00
+Ind AS 113|68|2|01:46:00
+Ind AS 103|69|1|01:27:00
+Ind AS 103|69|2|01:08:00
+Ind AS 103|70|1|01:05:00
+Ind AS 103|70|2|01:29:00
+Ind AS 103|71|1|01:22:00
+Ind AS 103|71|2|00:47:00
+Ind AS 103|72|1|01:16:00
+Ind AS 103|72|2|01:19:00
+Ind AS 103|73|1|01:24:00
+Ind AS 103|73|2|00:48:00
+Ind AS 103|74|1|01:42:00
+Ind AS 103|74|2|00:37:00
+Ind AS 103|75|1|01:22:00
+Ind AS 103|75|2|00:49:00
+Ind AS 103|76|1|01:21:00
+Ind AS 103|76|2|00:48:00
+Ind AS 103|77|1|01:32:00
+Ind AS 103|77|2|00:58:00
+Ind AS 103|77|3|00:05:00
+Ind AS 27 & 110|78|1|01:06:00
+Ind AS 110|78|2|01:05:00
+Ind AS 110|79|1|01:29:00
+Ind AS 110|79|2|00:51:00
+Ind AS 110|80|1|01:01:00
+Ind AS 110|80|2|01:02:00
+Ind AS 110|81|1|01:47:00
+Ind AS 110|81|2|00:51:00
+Ind AS 110|82|1|01:41:00
+Ind AS 110|82|2|01:24:00
+Ind AS 110|83|1|01:20:00
+Ind AS 110|83|2|00:28:00
+Ind AS 110|84|1|01:17:00
+Ind AS 110|84|2|00:50:00
+Ind AS 110|84|3|01:36:00
+Ind AS 110|85|1|02:02:00
+Ind AS 110|85|2|01:25:00
+Ind AS 110|86|1|01:48:00
+Ind AS 110|86|2|01:08:00
+Ind AS 111|87|1|00:42:00
+Ind AS 111|87|2|02:24:00
+Ind AS 111|88|1|01:03:00
+Ind AS 28|88|2|01:28:00
+Ind AS 28|89|1|01:24:00
+Ind AS 28|89|2|01:06:00
+Ind AS 28|90|1|01:37:00
+Ind AS 28 & 110 - Big Qs.|90|2|01:23:00
+CFS Extra Qs.|91|1|01:18:00
+CFS Extra Qs.|91|2|01:48:00
+Ind AS 111 & 28 Extra Qs.|91|3|01:18:00
+Ind AS 33|92|1|00:51:00
+Ind AS 33|92|2|01:20:00
+Ind AS 33|92|3|01:14:00
+Ind AS 33|93|1|01:16:00
+Ind AS 33|93|2|01:22:00
+Ind AS 33|94|1|02:01:00
+Ind AS 33|94|2|01:59:00
+Ind AS 21|95|1|01:40:00
+Ind AS 21|95|2|01:03:00
+Ind AS 21|96|1|02:17:00
+Ind AS 21|96|2|02:06:00
+Ind AS 115|97|1|01:36:00
+Ind AS 115|97|2|00:53:00
+Ind AS 115|98|1|01:29:00
+Ind AS 115|98|2|01:09:00
+Ind AS 115|99|1|01:50:00
+Ind AS 115|99|2|01:10:00
+Ind AS 115|100|1|01:25:00
+Ind AS 115|100|2|01:01:00
+Ind AS 115|101|1|01:26:00
+Ind AS 115|101|2|01:05:00
+Ind AS 115|102|1|01:35:00
+Ind AS 115|102|2|00:57:00
+Ind AS 115|103|1|01:18:00
+Ind AS 115|103|2|00:59:00
+Ind AS 115|103|3|01:31:00
+Ind AS 115 vs AS 7&9|103|4|00:12:00
+Ind AS 7|104|1|01:16:00
+Ind AS 7|104|2|01:32:00
+Ind AS 7|104|3|01:05:00
+Ind AS 7|105|1|01:22:00
+Ind AS 7|105|2|00:50:00
+Ind AS 7|105|3|01:35:00
+Ind AS 24|106|1|01:37:00
+Ind AS 24|106|2|00:59:00
+Revision Strategy, Guidance, Motivation|106|3|
+    `.trim();
+
+    const TESTS = [
+      {
+        name: "Test 1",
+        topics: ["Intro to Ind AS & Sch. III", "Ind AS 16", "Ind AS 38", "Ind AS 40"]
+      },
+      {
+        name: "Test 2",
+        topics: ["Ind AS 36", "Ind AS 105", "Ind AS 41", "Ind AS 2"]
+      },
+      {
+        name: "Test 3",
+        topics: ["Ind AS 1", "Ind AS 10", "Ind AS 37", "Ind AS 8", "Ind AS 108"]
+      },
+      {
+        name: "Test 4",
+        topics: ["Financial Instruments"]
+      },
+      {
+        name: "Test 5",
+        topics: ["Ind AS 20", "Ind AS 34", "Ind AS 23", "Ind AS 116", "Ind AS 19"]
+      },
+      {
+        name: "Test 6",
+        topics: ["Ind AS 12", "Ind AS 102"]
+      },
+      {
+        name: "Test 7",
+        topics: ["Ind AS 103", "Ind AS 110", "Ind AS 111", "Ind AS 28"]
+      }
+    ];
+
+    const STORAGE_KEY = "ca_final_fr_tracker_v1";
+
+    const lectures = RAW_LECTURES.split("\n").map((line, index) => {
+      const [chapter, lecture, part, duration] = line.split("|");
+
+      return {
+        id: `fr-${index + 1}`,
+        chapter: chapter.trim(),
+        lecture: lecture.trim(),
+        part: part.trim(),
+        duration: (duration || "").trim(),
+        seconds: durationToSeconds(duration || "")
+      };
+    });
+
+    const defaultState = {
+      completed: {},
+      history: [],
+      theme: "light",
+      timerSettings: {
+        focus: 25,
+        short: 5,
+        long: 15
+      },
+      timer: {
+        mode: "focus",
+        running: false,
+        endTime: null,
+        remainingSeconds: 25 * 60,
+        totalSeconds: 25 * 60
+      }
+    };
+
+    let state = loadState();
+    let timerInterval = null;
+    let toastTimeout = null;
+
+    const elements = {
+      sidebar: document.getElementById("sidebar"),
+      pageTitle: document.getElementById("pageTitle"),
+      pageSubtitle: document.getElementById("pageSubtitle"),
+      themeButton: document.getElementById("themeButton"),
+      mobileMenuButton: document.getElementById("mobileMenuButton"),
+      openFocusButton: document.getElementById("openFocusButton"),
+
+      chapterList: document.getElementById("chapterList"),
+      chapterFilter: document.getElementById("chapterFilter"),
+      statusFilter: document.getElementById("statusFilter"),
+      searchInput: document.getElementById("searchInput"),
+      testGrid: document.getElementById("testGrid"),
+
+      progressStat: document.getElementById("progressStat"),
+      completedCaption: document.getElementById("completedCaption"),
+      completedTimeStat: document.getElementById("completedTimeStat"),
+      remainingTimeStat: document.getElementById("remainingTimeStat"),
+      todayFocusStat: document.getElementById("todayFocusStat"),
+      todaySessionsCaption: document.getElementById("todaySessionsCaption"),
+      overallPercent: document.getElementById("overallPercent"),
+      overallProgressBar: document.getElementById("overallProgressBar"),
+      progressCount: document.getElementById("progressCount"),
+      totalCourseTime: document.getElementById("totalCourseTime"),
+      overallProgressText: document.getElementById("overallProgressText"),
+
+      timerRing: document.getElementById("timerRing"),
+      timerDisplay: document.getElementById("timerDisplay"),
+      timerLabel: document.getElementById("timerLabel"),
+      timerStartButton: document.getElementById("timerStartButton"),
+      timerResetButton: document.getElementById("timerResetButton"),
+      timerSkipButton: document.getElementById("timerSkipButton"),
+      focusLecture: document.getElementById("focusLecture"),
+      focusNote: document.getElementById("focusNote"),
+      focusMinutes: document.getElementById("focusMinutes"),
+      shortMinutes: document.getElementById("shortMinutes"),
+      longMinutes: document.getElementById("longMinutes"),
+      todayPomodoros: document.getElementById("todayPomodoros"),
+      totalFocusTime: document.getElementById("totalFocusTime"),
+
+      historyList: document.getElementById("historyList"),
+      historyCount: document.getElementById("historyCount"),
+      historyFilter: document.getElementById("historyFilter"),
+      exportButton: document.getElementById("exportButton"),
+      importInput: document.getElementById("importInput"),
+      resetDataButton: document.getElementById("resetDataButton"),
+
+      toast: document.getElementById("toast")
+    };
+
+    initialize();
+
+    function initialize() {
+      applyTheme();
+      populateChapterFilter();
+      populateFocusLectureSelect();
+      loadTimerSettingsIntoInputs();
+      bindEvents();
+      restoreTimer();
+      renderAll();
+    }
+
+    function loadState() {
+      try {
+        const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+        if (!stored) {
+          return structuredCloneSafe(defaultState);
+        }
+
+        return {
+          ...structuredCloneSafe(defaultState),
+          ...stored,
+          completed: stored.completed || {},
+          history: Array.isArray(stored.history) ? stored.history : [],
+          timerSettings: {
+            ...defaultState.timerSettings,
+            ...(stored.timerSettings || {})
+          },
+          timer: {
+            ...defaultState.timer,
+            ...(stored.timer || {})
+          }
+        };
+      } catch (error) {
+        console.warn("Could not load saved tracker data.", error);
+        return structuredCloneSafe(defaultState);
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function structuredCloneSafe(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function durationToSeconds(duration) {
+      if (!duration) return 0;
+
+      const parts = duration.split(":").map(Number);
+
+      if (parts.length !== 3 || parts.some(Number.isNaN)) {
+        return 0;
+      }
+
+      return parts[0] * 3600 + parts[1] * 60 + parts[2];
+    }
+
+    function formatDuration(seconds, compact = true) {
+      seconds = Math.max(0, Math.round(seconds));
+
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+
+      if (compact) {
+        if (hours === 0) return `${minutes}m`;
+        return `${hours}h ${minutes}m`;
+      }
+
+      return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00`;
+    }
+
+    function formatTimer(seconds) {
+      seconds = Math.max(0, Math.ceil(seconds));
+
+      const minutes = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+
+      return `${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+    }
+
+    function getChapterGroups() {
+      const map = new Map();
+
+      lectures.forEach((lecture) => {
+        if (!map.has(lecture.chapter)) {
+          map.set(lecture.chapter, []);
+        }
+
+        map.get(lecture.chapter).push(lecture);
+      });
+
+      return [...map.entries()].map(([chapter, items]) => ({
+        chapter,
+        items
+      }));
+    }
+
+    function populateChapterFilter() {
+      getChapterGroups().forEach(({ chapter }) => {
+        const option = document.createElement("option");
+        option.value = chapter;
+        option.textContent = chapter;
+        elements.chapterFilter.appendChild(option);
+      });
+    }
+
+    function populateFocusLectureSelect() {
+      elements.focusLecture.innerHTML =
+        '<option value="">General FR study session</option>';
+
+      lectures.forEach((lecture) => {
+        const option = document.createElement("option");
+        option.value = lecture.id;
+        option.textContent =
+          `${lecture.chapter} — Lecture ${lecture.lecture}, Part ${lecture.part}`;
+
+        elements.focusLecture.appendChild(option);
+      });
+    }
+
+    function bindEvents() {
+      document.querySelectorAll(".nav-button").forEach((button) => {
+        button.addEventListener("click", () => {
+          switchPage(button.dataset.page);
+          elements.sidebar.classList.remove("open");
+        });
+      });
+
+      elements.mobileMenuButton.addEventListener("click", () => {
+        elements.sidebar.classList.toggle("open");
+      });
+
+      elements.openFocusButton.addEventListener("click", () => {
+        switchPage("focus");
+      });
+
+      elements.themeButton.addEventListener("click", toggleTheme);
+
+      elements.searchInput.addEventListener("input", renderChapters);
+      elements.statusFilter.addEventListener("change", renderChapters);
+      elements.chapterFilter.addEventListener("change", renderChapters);
+
+      document.querySelectorAll(".mode-button").forEach((button) => {
+        button.addEventListener("click", () => {
+          setTimerMode(button.dataset.mode);
+        });
+      });
+
+      elements.timerStartButton.addEventListener("click", toggleTimer);
+      elements.timerResetButton.addEventListener("click", resetTimer);
+      elements.timerSkipButton.addEventListener("click", skipTimer);
+
+      [elements.focusMinutes, elements.shortMinutes, elements.longMinutes]
+        .forEach((input) => {
+          input.addEventListener("change", updateTimerSettings);
+        });
+
+      elements.historyFilter.addEventListener("change", renderHistory);
+      elements.exportButton.addEventListener("click", exportData);
+      elements.importInput.addEventListener("change", importData);
+      elements.resetDataButton.addEventListener("click", resetAllData);
+
+      window.addEventListener("beforeunload", saveState);
+    }
+
+    function switchPage(pageName) {
+      const pageInfo = {
+        tracker: {
+          title: "Lecture Tracker",
+          subtitle: "Track every lecture and complete your FR syllabus."
+        },
+        focus: {
+          title: "Pomodoro Focus",
+          subtitle: "Use focused study sessions with planned breaks."
+        },
+        history: {
+          title: "Study History",
+          subtitle: "Review your lecture and Pomodoro activity."
+        }
+      };
+
+      document.querySelectorAll(".page").forEach((page) => {
+        page.classList.remove("active");
+      });
+
+      document.querySelectorAll(".nav-button").forEach((button) => {
+        button.classList.toggle("active", button.dataset.page === pageName);
+      });
+
+      document.getElementById(`${pageName}Page`).classList.add("active");
+
+      elements.pageTitle.textContent = pageInfo[pageName].title;
+      elements.pageSubtitle.textContent = pageInfo[pageName].subtitle;
+    }
+
+    function renderAll() {
+      renderChapters();
+      renderStats();
+      renderTests();
+      renderHistory();
+      renderFocusStats();
+      updateTimerDisplay();
+    }
+
+    function renderChapters() {
+      const query = elements.searchInput.value.trim().toLowerCase();
+      const status = elements.statusFilter.value;
+      const selectedChapter = elements.chapterFilter.value;
+
+      const groups = getChapterGroups();
+      elements.chapterList.innerHTML = "";
+
+      let visibleGroups = 0;
+
+      groups.forEach(({ chapter, items }, groupIndex) => {
+        if (selectedChapter !== "all" && chapter !== selectedChapter) {
+          return;
+        }
+
+        const filteredItems = items.filter((lecture) => {
+          const completed = Boolean(state.completed[lecture.id]);
+
+          const matchesStatus =
+            status === "all" ||
+            (status === "completed" && completed) ||
+            (status === "pending" && !completed);
+
+          const searchableText =
+            `${lecture.chapter} lecture ${lecture.lecture} part ${lecture.part}`
+              .toLowerCase();
+
+          const matchesSearch =
+            !query || searchableText.includes(query);
+
+          return matchesStatus && matchesSearch;
+        });
+
+        if (!filteredItems.length) return;
+
+        visibleGroups++;
+
+        const completedCount = items.filter(
+          (lecture) => state.completed[lecture.id]
+        ).length;
+
+        const percent = Math.round((completedCount / items.length) * 100);
+        const totalSeconds = items.reduce((sum, item) => sum + item.seconds, 0);
+
+        const card = document.createElement("article");
+        card.className = "card chapter-card";
+
+        if (query || selectedChapter !== "all" || groupIndex === 0) {
+          card.classList.add("open");
+        }
+
+        card.innerHTML = `
+          <div class="chapter-header">
+            <span class="chapter-toggle">▶</span>
+
+            <div class="chapter-title">
+              <strong>${escapeHtml(chapter)}</strong>
+              <small>
+                ${completedCount}/${items.length} completed ·
+                ${formatDuration(totalSeconds)}
+              </small>
+            </div>
+
+            <div class="mini-progress">
+              <span style="width:${percent}%"></span>
+            </div>
+
+            <div class="chapter-percent">${percent}%</div>
+          </div>
+
+          <div class="chapter-body">
+            <table>
+              <thead>
+                <tr>
+                  <th>Done</th>
+                  <th>Lecture</th>
+                  <th>Part</th>
+                  <th>Duration</th>
+                  <th>Status</th>
+                  <th>Focus</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${filteredItems.map(renderLectureRow).join("")}
+              </tbody>
+            </table>
+          </div>
+        `;
+
+        card.querySelector(".chapter-header").addEventListener("click", () => {
+          card.classList.toggle("open");
+        });
+
+        card.querySelectorAll(".lecture-checkbox").forEach((checkbox) => {
+          checkbox.addEventListener("click", (event) => {
+            event.stopPropagation();
+          });
+
+          checkbox.addEventListener("change", () => {
+            toggleLecture(checkbox.dataset.id, checkbox.checked);
+          });
+        });
+
+        card.querySelectorAll(".focus-lecture-button").forEach((button) => {
+          button.addEventListener("click", () => {
+            elements.focusLecture.value = button.dataset.id;
+            switchPage("focus");
+            showToast("Lecture selected for your focus session.");
+          });
+        });
+
+        elements.chapterList.appendChild(card);
+      });
+
+      if (!visibleGroups) {
+        elements.chapterList.innerHTML = `
+          <div class="card empty-state">
+            <div style="font-size:38px">🔎</div>
+            <strong>No matching lectures found</strong>
+            <div style="margin-top:7px">Try changing the search or filters.</div>
+          </div>
+        `;
+      }
+    }
+
+    function renderLectureRow(lecture) {
+      const completed = Boolean(state.completed[lecture.id]);
+
+      return `
+        <tr class="${completed ? "completed-row" : ""}">
+          <td>
+            <input
+              class="checkbox lecture-checkbox"
+              type="checkbox"
+              data-id="${lecture.id}"
+              ${completed ? "checked" : ""}
+              aria-label="Mark lecture as completed"
+            >
+          </td>
+
+          <td class="lecture-name">Lecture ${escapeHtml(lecture.lecture)}</td>
+          <td>${escapeHtml(lecture.part)}</td>
+          <td>${lecture.duration || "To be updated"}</td>
+
+          <td>
+            <span class="status-badge ${completed ? "done" : "pending"}">
+              ${completed ? "Completed" : "Pending"}
+            </span>
+          </td>
+
+          <td>
+            <button
+              class="button small focus-lecture-button"
+              data-id="${lecture.id}"
+            >
+              🍅 Focus
+            </button>
+          </td>
+        </tr>
+      `;
+    }
+
+    function toggleLecture(id, completed) {
+      const lecture = lectures.find((item) => item.id === id);
+      if (!lecture) return;
+
+      if (completed) {
+        state.completed[id] = new Date().toISOString();
+
+        addHistory({
+          type: "completed",
+          title: `${lecture.chapter} completed`,
+          detail: `Lecture ${lecture.lecture}, Part ${lecture.part}`
+        });
+
+        showToast("Lecture marked as completed.");
+      } else {
+        delete state.completed[id];
+
+        addHistory({
+          type: "reopened",
+          title: `${lecture.chapter} reopened`,
+          detail: `Lecture ${lecture.lecture}, Part ${lecture.part}`
+        });
+
+        showToast("Lecture moved back to pending.");
+      }
+
+      saveState();
+      renderAll();
+    }
+
+    function renderStats() {
+      const completedLectures = lectures.filter(
+        (lecture) => state.completed[lecture.id]
+      );
+
+      const totalCount = lectures.length;
+      const completedCount = completedLectures.length;
+      const percent = totalCount
+        ? Math.round((completedCount / totalCount) * 100)
+        : 0;
+
+      const totalSeconds = lectures.reduce(
+        (sum, lecture) => sum + lecture.seconds,
+        0
+      );
+
+      const completedSeconds = completedLectures.reduce(
+        (sum, lecture) => sum + lecture.seconds,
+        0
+      );
+
+      const remainingSeconds = Math.max(0, totalSeconds - completedSeconds);
+      const todaySessions = getTodayPomodoroHistory();
+      const todayFocusSeconds = todaySessions.reduce(
+        (sum, item) => sum + Number(item.seconds || 0),
+        0
+      );
+
+      elements.progressStat.textContent = `${percent}%`;
+      elements.completedCaption.textContent =
+        `${completedCount} of ${totalCount} lectures completed`;
+
+      elements.completedTimeStat.textContent =
+        formatDuration(completedSeconds);
+
+      elements.remainingTimeStat.textContent =
+        formatDuration(remainingSeconds);
+
+      elements.todayFocusStat.textContent =
+        formatDuration(todayFocusSeconds);
+
+      elements.todaySessionsCaption.textContent =
+        `${todaySessions.length} Pomodoro session${todaySessions.length === 1 ? "" : "s"}`;
+
+      elements.overallPercent.textContent = `${percent}%`;
+      elements.overallProgressBar.style.width = `${percent}%`;
+      elements.progressCount.textContent =
+        `${completedCount} / ${totalCount} lectures`;
+
+      elements.totalCourseTime.textContent =
+        `Total: ${formatDuration(totalSeconds)}`;
+
+      if (percent === 100) {
+        elements.overallProgressText.textContent =
+          "Excellent! You completed every available lecture.";
+      } else if (percent >= 75) {
+        elements.overallProgressText.textContent =
+          "You are in the final stretch. Keep going!";
+      } else if (percent >= 40) {
+        elements.overallProgressText.textContent =
+          "Great progress. Consistency will finish the course.";
+      } else {
+        elements.overallProgressText.textContent =
+          "Start checking off completed lectures.";
+      }
+    }
+
+    function renderTests() {
+      elements.testGrid.innerHTML = TESTS.map((test) => {
+        const ready = test.topics.every((topic) => isChapterComplete(topic));
+
+        return `
+          <div class="test-item ${ready ? "ready" : ""}">
+            <div class="test-title">
+              <span>${escapeHtml(test.name)}</span>
+              <span>${ready ? "✅ Ready" : "⏳ Pending"}</span>
+            </div>
+
+            <div class="test-topics">
+              ${test.topics.map(escapeHtml).join(" · ")}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function isChapterComplete(chapterName) {
+      const chapterLectures = lectures.filter((lecture) => {
+        if (chapterName === "Ind AS 116") {
+          return lecture.chapter === "Ind AS 116" ||
+                 lecture.chapter === "Ind AS 116 vs AS 19";
+        }
+
+        if (chapterName === "Ind AS 110") {
+          return lecture.chapter === "Ind AS 110" ||
+                 lecture.chapter === "Ind AS 27 & 110";
+        }
+
+        if (chapterName === "Ind AS 111") {
+          return lecture.chapter === "Ind AS 111";
+        }
+
+        if (chapterName === "Ind AS 28") {
+          return lecture.chapter === "Ind AS 28";
+        }
+
+        return lecture.chapter === chapterName;
+      });
+
+      return chapterLectures.length > 0 &&
+        chapterLectures.every((lecture) => state.completed[lecture.id]);
+    }
+
+    function addHistory(entry) {
+      state.history.unshift({
+        id: crypto.randomUUID
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random()}`,
+        timestamp: new Date().toISOString(),
+        ...entry
+      });
+
+      if (state.history.length > 1500) {
+        state.history = state.history.slice(0, 1500);
+      }
+    }
+
+    function renderHistory() {
+      const filter = elements.historyFilter.value;
+
+      const filtered = state.history.filter((item) => {
+        return filter === "all" || item.type === filter;
+      });
+
+      elements.historyCount.textContent =
+        `${state.history.length} saved activit${state.history.length === 1 ? "y" : "ies"}`;
+
+      if (!filtered.length) {
+        elements.historyList.innerHTML = `
+          <div class="empty-state">
+            <div style="font-size:42px">🕘</div>
+            <strong>No activity yet</strong>
+            <div style="margin-top:7px">
+              Complete lectures or finish a Pomodoro session to build your history.
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      elements.historyList.innerHTML = filtered.map((item) => {
+        const icon =
+          item.type === "pomodoro" ? "🍅" :
+          item.type === "completed" ? "✅" : "↩️";
+
+        return `
+          <div class="history-item">
+            <div class="history-icon">${icon}</div>
+
+            <div>
+              <div class="history-title">${escapeHtml(item.title || "Activity")}</div>
+              <div class="history-meta">${escapeHtml(item.detail || "")}</div>
+            </div>
+
+            <div class="history-date">
+              ${formatDate(item.timestamp)}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function formatDate(timestamp) {
+      const date = new Date(timestamp);
+
+      return new Intl.DateTimeFormat(undefined, {
+        dateStyle: "medium",
+        timeStyle: "short"
+      }).format(date);
+    }
+
+    /* -------------------- POMODORO -------------------- */
+
+    function loadTimerSettingsIntoInputs() {
+      elements.focusMinutes.value = state.timerSettings.focus;
+      elements.shortMinutes.value = state.timerSettings.short;
+      elements.longMinutes.value = state.timerSettings.long;
+    }
+
+    function updateTimerSettings() {
+      state.timerSettings.focus = clamp(
+        Number(elements.focusMinutes.value) || 25,
+        1,
+        180
+      );
+
+      state.timerSettings.short = clamp(
+        Number(elements.shortMinutes.value) || 5,
+        1,
+        60
+      );
+
+      state.timerSettings.long = clamp(
+        Number(elements.longMinutes.value) || 15,
+        1,
+        90
+      );
+
+      loadTimerSettingsIntoInputs();
+
+      if (!state.timer.running) {
+        resetTimer();
+      } else {
+        saveState();
+      }
+    }
+
+    function getModeSeconds(mode) {
+      return Number(state.timerSettings[mode] || 25) * 60;
+    }
+
+    function setTimerMode(mode) {
+      if (!["focus", "short", "long"].includes(mode)) return;
+
+      state.timer.mode = mode;
+      state.timer.running = false;
+      state.timer.endTime = null;
+      state.timer.totalSeconds = getModeSeconds(mode);
+      state.timer.remainingSeconds = state.timer.totalSeconds;
+
+      clearInterval(timerInterval);
+      timerInterval = null;
+
+      saveState();
+      updateTimerDisplay();
+    }
+
+    function toggleTimer() {
+      if (state.timer.running) {
+        pauseTimer();
+      } else {
+        startTimer();
+      }
+    }
+
+    function startTimer() {
+      if (state.timer.remainingSeconds <= 0) {
+        state.timer.remainingSeconds = getModeSeconds(state.timer.mode);
+        state.timer.totalSeconds = state.timer.remainingSeconds;
+      }
+
+      state.timer.running = true;
+      state.timer.endTime =
+        Date.now() + state.timer.remainingSeconds * 1000;
+
+      saveState();
+      startTimerInterval();
+      updateTimerDisplay();
+    }
+
+    function pauseTimer() {
+      if (!state.timer.running) return;
+
+      state.timer.remainingSeconds = Math.max(
+        0,
+        Math.ceil((state.timer.endTime - Date.now()) / 1000)
+      );
+
+      state.timer.running = false;
+      state.timer.endTime = null;
+
+      clearInterval(timerInterval);
+      timerInterval = null;
+
+      saveState();
+      updateTimerDisplay();
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+
+      state.timer.running = false;
+      state.timer.endTime = null;
+      state.timer.totalSeconds = getModeSeconds(state.timer.mode);
+      state.timer.remainingSeconds = state.timer.totalSeconds;
+
+      saveState();
+      updateTimerDisplay();
+    }
+
+    function skipTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+
+      const nextMode = state.timer.mode === "focus" ? "short" : "focus";
+      setTimerMode(nextMode);
+      showToast(`Switched to ${modeLabel(nextMode)}.`);
+    }
+
+    function restoreTimer() {
+      if (!state.timer.running || !state.timer.endTime) {
+        updateTimerDisplay();
+        return;
+      }
+
+      const remaining = Math.ceil(
+        (state.timer.endTime - Date.now()) / 1000
+      );
+
+      if (remaining <= 0) {
+        state.timer.remainingSeconds = 0;
+        finishTimer();
+      } else {
+        state.timer.remainingSeconds = remaining;
+        startTimerInterval();
+      }
+    }
+
+    function startTimerInterval() {
+      clearInterval(timerInterval);
+
+      timerInterval = setInterval(() => {
+        const remaining = Math.max(
+          0,
+          Math.ceil((state.timer.endTime - Date.now()) / 1000)
+        );
+
+        state.timer.remainingSeconds = remaining;
+        updateTimerDisplay();
+
+        if (remaining <= 0) {
+          finishTimer();
+        }
+      }, 500);
+    }
+
+    function finishTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+
+      const completedMode = state.timer.mode;
+      const completedSeconds = state.timer.totalSeconds;
+
+      state.timer.running = false;
+      state.timer.endTime = null;
+      state.timer.remainingSeconds = 0;
+
+      if (completedMode === "focus") {
+        const lecture = lectures.find(
+          (item) => item.id === elements.focusLecture.value
+        );
+
+        const note = elements.focusNote.value.trim();
+
+        addHistory({
+          type: "pomodoro",
+          title: lecture
+            ? `${lecture.chapter} focus session`
+            : "FR focus session",
+          detail: [
+            `${Math.round(completedSeconds / 60)} minutes`,
+            lecture
+              ? `Lecture ${lecture.lecture}, Part ${lecture.part}`
+              : "",
+            note
+          ].filter(Boolean).join(" · "),
+          seconds: completedSeconds,
+          lectureId: lecture?.id || null,
+          note
+        });
+
+        elements.focusNote.value = "";
+      }
+
+      playNotificationSound();
+
+      const nextMode = completedMode === "focus" ? "short" : "focus";
+
+      state.timer.mode = nextMode;
+      state.timer.totalSeconds = getModeSeconds(nextMode);
+      state.timer.remainingSeconds = state.timer.totalSeconds;
+
+      saveState();
+      renderAll();
+
+      showToast(
+        completedMode === "focus"
+          ? "Focus session completed! Time for a break."
+          : "Break completed! Ready to focus?"
+      );
+    }
+
+    function updateTimerDisplay() {
+      const mode = state.timer.mode;
+      const remaining = state.timer.remainingSeconds;
+      const total = Math.max(1, state.timer.totalSeconds);
+      const progress = ((total - remaining) / total) * 360;
+
+      elements.timerDisplay.textContent = formatTimer(remaining);
+      elements.timerRing.style.setProperty(
+        "--timer-progress",
+        `${Math.max(0, Math.min(360, progress))}deg`
+      );
+
+      elements.timerLabel.textContent = state.timer.running
+        ? `${modeLabel(mode)} in progress`
+        : `Ready for ${modeLabel(mode).toLowerCase()}`;
+
+      elements.timerStartButton.textContent = state.timer.running
+        ? "⏸ Pause"
+        : "▶ Start";
+
+      document.querySelectorAll(".mode-button").forEach((button) => {
+        button.classList.toggle("active", button.dataset.mode === mode);
+      });
+
+      document.title = state.timer.running
+        ? `${formatTimer(remaining)} · ${modeLabel(mode)}`
+        : "CA Final FR Study Tracker";
+    }
+
+    function modeLabel(mode) {
+      return mode === "focus"
+        ? "Focus"
+        : mode === "short"
+          ? "Short Break"
+          : "Long Break";
+    }
+
+    function renderFocusStats() {
+      const today = getTodayPomodoroHistory();
+
+      const totalSessions = state.history.filter(
+        (item) => item.type === "pomodoro"
+      );
+
+      const totalSeconds = totalSessions.reduce(
+        (sum, item) => sum + Number(item.seconds || 0),
+        0
+      );
+
+      elements.todayPomodoros.textContent = today.length;
+      elements.totalFocusTime.textContent = formatDuration(totalSeconds);
+    }
+
+    function getTodayPomodoroHistory() {
+      const todayKey = getLocalDateKey(new Date());
+
+      return state.history.filter((item) => {
+        return item.type === "pomodoro" &&
+          getLocalDateKey(new Date(item.timestamp)) === todayKey;
+      });
+    }
+
+    function getLocalDateKey(date) {
+      return [
+        date.getFullYear(),
+        String(date.getMonth() + 1).padStart(2, "0"),
+        String(date.getDate()).padStart(2, "0")
+      ].join("-");
+    }
+
+    function playNotificationSound() {
+      try {
+        const AudioContext =
+          window.AudioContext || window.webkitAudioContext;
+
+        const context = new AudioContext();
+        const oscillator = context.createOscillator();
+        const gain = context.createGain();
+
+        oscillator.connect(gain);
+        gain.connect(context.destination);
+
+        oscillator.frequency.setValueAtTime(880, context.currentTime);
+        oscillator.frequency.setValueAtTime(
+          660,
+          context.currentTime + 0.22
+        );
+
+        gain.gain.setValueAtTime(0.12, context.currentTime);
+        gain.gain.exponentialRampToValueAtTime(
+          0.001,
+          context.currentTime + 0.55
+        );
+
+        oscillator.start();
+        oscillator.stop(context.currentTime + 0.55);
+      } catch (error) {
+        console.warn("Audio notification unavailable.", error);
+      }
+    }
+
+    /* -------------------- BACKUP / THEME -------------------- */
+
+    function exportData() {
+      const backup = {
+        app: "CA Final FR Study Tracker",
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        data: state
+      };
+
+      const blob = new Blob(
+        [JSON.stringify(backup, null, 2)],
+        { type: "application/json" }
+      );
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download =
+        `fr-tracker-backup-${getLocalDateKey(new Date())}.json`;
+
+      link.click();
+      URL.revokeObjectURL(url);
+
+      showToast("Backup exported successfully.");
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        try {
+          const imported = JSON.parse(reader.result);
+          const importedState = imported.data || imported;
+
+          if (
+            typeof importedState !== "object" ||
+            !importedState.completed ||
+            !Array.isArray(importedState.history)
+          ) {
+            throw new Error("Invalid backup file");
+          }
+
+          state = {
+            ...structuredCloneSafe(defaultState),
+            ...importedState,
+            completed: importedState.completed || {},
+            history: importedState.history || [],
+            timerSettings: {
+              ...defaultState.timerSettings,
+              ...(importedState.timerSettings || {})
+            },
+            timer: {
+              ...defaultState.timer,
+              ...(importedState.timer || {})
+            }
+          };
+
+          clearInterval(timerInterval);
+          timerInterval = null;
+
+          saveState();
+          applyTheme();
+          loadTimerSettingsIntoInputs();
+          restoreTimer();
+          renderAll();
+
+          showToast("Backup imported successfully.");
+        } catch (error) {
+          alert("This file is not a valid FR tracker backup.");
+        } finally {
+          event.target.value = "";
+        }
+      };
+
+      reader.readAsText(file);
+    }
+
+    function resetAllData() {
+      const confirmed = confirm(
+        "This will permanently erase all lecture progress, history and timer data from this browser. Continue?"
+      );
+
+      if (!confirmed) return;
+
+      clearInterval(timerInterval);
+      timerInterval = null;
+
+      state = structuredCloneSafe(defaultState);
+      localStorage.removeItem(STORAGE_KEY);
+
+      loadTimerSettingsIntoInputs();
+      applyTheme();
+      renderAll();
+
+      showToast("All tracker data has been reset.");
+    }
+
+    function toggleTheme() {
+      state.theme = state.theme === "dark" ? "light" : "dark";
+      applyTheme();
+      saveState();
+    }
+
+    function applyTheme() {
+      document.body.classList.toggle("dark", state.theme === "dark");
+      elements.themeButton.textContent =
+        state.theme === "dark" ? "☀️" : "🌙";
+    }
+
+    function showToast(message) {
+      clearTimeout(toastTimeout);
+
+      elements.toast.textContent = message;
+      elements.toast.classList.add("show");
+
+      toastTimeout = setTimeout(() => {
+        elements.toast.classList.remove("show");
+      }, 3000);
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+  </script>
+</body>
+</html>
